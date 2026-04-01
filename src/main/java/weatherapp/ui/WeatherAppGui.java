@@ -136,13 +136,17 @@ public class WeatherAppGui extends JFrame {
         SwingWorker<WeatherData, Void> worker = new SwingWorker<WeatherData, Void>() {
             @Override
             protected WeatherData doInBackground() throws Exception {
-                WeatherData data = weatherService.getWeatherForCity(city);
                 try {
-                    deepSeekService.analyzeWeather(data, userQuestion);
-                } catch (Exception aiEx) {
-                    data.setAiRecommendation("No se pudo conectar con DeepSeek: " + aiEx.getMessage());
+                    WeatherData data = weatherService.getWeatherForCity(city);
+                    try {
+                        deepSeekService.analyzeWeather(data, userQuestion);
+                    } catch (Exception aiEx) {
+                        data = data.withAiRecommendation("No se pudo conectar con DeepSeek: " + aiEx.getMessage());
+                    }
+                    return data;
+                } catch (Exception e) {
+                    throw new Exception(e.getMessage(), e);
                 }
-                return data;
             }
 
             @Override
@@ -150,12 +154,12 @@ public class WeatherAppGui extends JFrame {
                 try {
                     WeatherData data = get();
                     setLabels(
-                            String.format("%.1f °C", data.getTemperature()),
-                            data.getHumidity() + " %",
-                            String.format("%.1f km/h", data.getWindSpeed()),
-                            data.getDescription()
+                            String.format("%.1f °C", data.temperature()),
+                            data.humidity() + " %",
+                            String.format("%.1f km/h", data.windSpeed()),
+                            data.description()
                     );
-                    aiRecommendationArea.setText(data.getAiRecommendation());
+                    aiRecommendationArea.setText(data.aiRecommendation() != null ? data.aiRecommendation() : "");
                 } catch (Exception ex) {
                     setLabels("--", "--", "--", "Error / No encontrado");
                     aiRecommendationArea.setText("Error en la obtención de datos, revisa tu conexión y prueba otra vez.");

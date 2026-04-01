@@ -13,23 +13,21 @@ public class WeatherServiceTest {
         WeatherService weatherService = new WeatherService();
         DeepSeekService aiService = new DeepSeekService();
 
-        // 1. Probar que recibe coordenadas y datos de clima (Londres)
         WeatherData data = weatherService.getWeatherForCity("Londres");
         
-        assertNotNull("La temperatura no debe ser nula", data.getTemperature());
-        assertNotNull("La descripción no debe estar vacía", data.getDescription());
-        assertTrue("Debe existir datos 'daily' de próximos días (max)", data.getUpcomingMaxTemps().size() > 0);
+        assertNotNull("La temperatura no debe ser nula", data.temperature());
+        assertNotNull("La descripción no debe estar vacía", data.description());
+        assertTrue("Debe existir datos 'daily' de próximos días (max)", data.upcomingMaxTemps().size() > 0);
         
         System.out.println("========== DATOS DE LONDRES ==========");
-        System.out.println("Temperatura actual: " + data.getTemperature() + " °C");
-        System.out.println("Clima: " + data.getDescription());
+        System.out.println("Temperatura actual: " + data.temperature() + " °C");
+        System.out.println("Clima: " + data.description());
 
-        // 2. Probar que la IA puede interpretar esto con una pregunta restrictiva
-        aiService.analyzeWeather(data, "Dime un poema sobre código en java");
+        data = aiService.analyzeWeather(data, "Dime un poema sobre código en java");
         
-        assertNotNull("La IA debió haber devuelto un texto", data.getAiRecommendation());
+        assertNotNull("La IA debió haber devuelto un texto", data.aiRecommendation());
         System.out.println("Recomendación de DeepSeek recibida (Prueba maliciosa):");
-        System.out.println(data.getAiRecommendation());
+        System.out.println(data.aiRecommendation());
         System.out.println("======================================");
     }
 }

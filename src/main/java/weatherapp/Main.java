@@ -42,22 +42,21 @@ public class Main {
             System.out.print("❓ (Opcional) ¿Tienes alguna pregunta específica sobre este clima?: ");
             String userQuestion = scanner.nextLine().trim();
 
-            System.out.println("⏳ Obteniendo datos de Open-Meteo...");
-            try {
-                WeatherData data = weatherService.getWeatherForCity(city);
-                System.out.println("\n🌡️ Temperatura: " + data.getTemperature() + " °C");
-                System.out.println("💧 Humedad:    " + data.getHumidity() + " %");
-                System.out.println("💨 Viento:     " + data.getWindSpeed() + " km/h");
-                System.out.println("☁️ Resumen:    " + data.getDescription());
+                System.out.println("⏳ Obteniendo datos de Open-Meteo...");
+                try {
+                    WeatherData data = weatherService.getWeatherForCity(city);
+                    System.out.println("\n🌡️ Temperatura: " + data.temperature() + " °C");
+                    System.out.println("💧 Humedad:    " + data.humidity() + " %");
+                    System.out.println("💨 Viento:     " + data.windSpeed() + " km/h");
+                    System.out.println("☁️ Resumen:    " + data.description());
 
-                System.out.println("\n🧠 La IA de DeepSeek está analizando...");
-                // Llamamos a la API de IA pasando la pregunta
-                deepSeekService.analyzeWeather(data, userQuestion);
-                
-                System.out.println("---------------------------------------------------------");
-                System.out.println("🤖 RECOMENDACIÓN DE LA IA:");
-                System.out.println(data.getAiRecommendation());
-                System.out.println("---------------------------------------------------------");
+                    System.out.println("\n🧠 La IA de DeepSeek está analyzing...");
+                    data = deepSeekService.analyzeWeather(data, userQuestion);
+                    
+                    System.out.println("---------------------------------------------------------");
+                    System.out.println("🤖 RECOMENDACIÓN DE LA IA:");
+                    System.out.println(data.aiRecommendation());
+                    System.out.println("---------------------------------------------------------");
 
             } catch (Exception e) {
                 System.out.println("❌ Ocurrió un error al obtener la información: " + e.getMessage());
